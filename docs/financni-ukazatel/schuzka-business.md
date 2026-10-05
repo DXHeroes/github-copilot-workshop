@@ -1,7 +1,7 @@
 # Záznam schůzky --- Business requirements Finanční ukazatel
 
-**Datum:** 5. 5. 2025, 14:00--15:30
-**Účastníci:** Jana P. (PM), Martin D. (Business Owner), Lucie Š. (UX), Radek F. (Data Scientist), Ondřej B. (IT analytik), Karolína N. (QA)
+**Datum:** 5. 5. 2025, 14:00--15:30\
+**Účastníci:** Jana P. (PM), Martin D. (Business Owner), Lucie Š. (UX), Radek F. (Data Scientist), Ondřej B. (IT analytik), Karolína N. (QA)\
 **Zapisovatel:** Ondřej B. (pozn.: zápis dělaný za běhu, některé části nemusí být doslovné)
 
 ---
@@ -36,13 +36,13 @@ Jana: „Fajn, zapíšeme. Pojďme k vizualizaci. Lucie?"
 
 Lucie: „Z UX pohledu --- jednoduchý barevný kruh na home screenu, číslo uprostřed. Zelená, oranžová, červená. Po kliknutí detail s rozpadem faktorů."
 
-Martin: „S tím souhlasím. Ale ta škála musí být 0--100, žádné zjednodušování na tři barvy a hotovo. Uživatel potřebuje granularitu --- je rozdíl, jestli má 45 nebo 65."
+Martin: „S tím souhlasím. A musí to být vždy viditelné na home screenu, ne schované někde v menu. Ale ta škála musí být 0--100, žádné zjednodušování na tři barvy a hotovo. Uživatel potřebuje granularitu --- je rozdíl, jestli má 45 nebo 65."
 
 Lucie: „Hmm, v UX výzkumech se ukazuje, že uživatelé mají problém interpretovat jemné škály u finančních produktů. Většina preferuje jednodušší sdělení. Ale nemám ještě data specificky pro náš use case, tak to zatím nechme."
 
 Jana: „OK, škála 0--100 jako výchozí, ale UX to ověří ve výzkumu. Pojďme dál --- messaging. Jak budeme komunikovat výsledky?"
 
-Martin: „Upřímně. Když je někdo na 30, tak mu řekneme, že má problém. Nemůžeme tvrdlit člověku, který utrácí víc než vydělá, že je na tom dobře."
+Martin: „Upřímně. Když je někdo na 30, tak mu řekneme, že má problém. Nemůžeme tvrdit člověku, který utrácí víc než vydělá, že je na tom dobře."
 
 Jana: „Moment --- na boardu jsme se dohodli, že messaging bude **vždy motivační, nikdy negativní**. Nechceme, aby se uživatelé cítili špatně a přestali appku používat."
 

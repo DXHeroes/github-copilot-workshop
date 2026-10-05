@@ -1,7 +1,7 @@
 # Tech poznámky --- financial health service / integrace
 
-**Autor:** Tomáš H. (Solution Architect)
-**Datum:** 8. 5. 2025
+**Autor:** Tomáš H. (Solution Architect)\
+**Datum:** 8. 5. 2025\
 **Status:** draft, nekompletní
 
 ---
@@ -76,11 +76,11 @@ Petr říkal, že **marketing už připravil launch kampaň s názvem „Vaše f
 - [ ] Co zobrazit uživateli bez dostatečné historie (< 6 měsíců)? → **NIKDO NEROZHODL**
 - [ ] Jak přistupovat ke sdíleným účtům? → odloženo, ale co joint owners?
 - [ ] Multi-currency (EUR účty) → odloženo na po MVP
-- [ ] Přistupnost: stávající kruhová komponenta v George není přístupná pro screen readery (info od Lucie). Kdo to opraví?
+- [ ] Přístupnost: stávající kruhová komponenta v George není přístupná pro screen readery (info od Lucie). Kdo to opraví?
 - [ ] Co se stane, když API vrátí neúplná data? (timeout, partial response) → fallback strategie není definovaná
 - [ ] Monitoring accuracy modelu --- kdo to bude dělat? DS tým nemá kapacitu na ongoing monitoring
 - [ ] Service account pro loan-service-api --- kdo požádá? → **NEŘEŠENO**
-- [ ] Jak se budou lisit váhy mezi architektem a věkových skupin? Radek zmiňoval jiné patterny u mladých -- starších? Chybí segmentace.
+- [ ] Jak se budou lišit váhy mezi věkovými skupinami? Radek zmiňoval jiné patterny u mladých -- starších? Chybí segmentace.
 
 ## Pro trénink ML modelu (fáze 2)
 

@@ -1,7 +1,7 @@
 # Záznam schůzky --- Technická architektura + UX review
 
-**Datum:** 7. 5. 2025, 10:00--11:45
-**Účastníci:** Jana P. (PM), Lucie Š. (UX), Radek F. (Data Scientist), Ondřej B. (IT analytik), Petr N. (Team Lead FE), Tomáš H. (Solution Architect), Jakub K. (BE vývojář)
+**Datum:** 7. 5. 2025, 10:00--11:45\
+**Účastníci:** Jana P. (PM), Lucie Š. (UX), Radek F. (Data Scientist), Ondřej B. (IT analytik), Petr N. (Team Lead FE), Tomáš H. (Solution Architect), Jakub K. (BE vývojář)\
 **Nepřítomen:** Martin D. (Business Owner) --- omluven, je na konferenci
 
 ---

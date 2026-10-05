@@ -1,8 +1,8 @@
 # UX Research --- Finanční ukazatel: co uživatelé skutečně chtějí
 
-**Autor:** Lucie Š. (UX Research)
-**Datum:** 14. 5. 2025
-**Metoda:** Hloubkové rozhovory, 12 respondentů (6 žen, 6 mužů, věk 24--42, všichni aktivní uživatelé George)
+**Autor:** Lucie Š. (UX Research)\
+**Datum:** 14. 5. 2025\
+**Metoda:** Hloubkové rozhovory, 12 respondentů (6 žen, 6 mužů, věk 24--42, všichni aktivní uživatelé George)\
 **Pozn.:** Výzkum proběhl po kickoff schůzce, jako rychlý validační výzkum klíčových předpokladů.
 
 ---

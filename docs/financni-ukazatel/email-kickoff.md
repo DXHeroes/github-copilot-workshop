@@ -1,8 +1,8 @@
 # Emailový thread --- Kickoff: Finanční ukazatel
 
-**Od:** Jana P. (PM)
-**Komu:** DL-FinancialHealth-Core
-**Datum:** 5. 5. 2025, 8:52
+**Od:** Jana P. (PM)\
+**Komu:** DL-FinancialHealth-Core\
+**Datum:** 5. 5. 2025, 8:52\
 **Předmět:** Kickoff Finanční ukazatel --- shrnutí a další kroky
 
 Ahoj všichni,
@@ -33,10 +33,10 @@ P.S. Ještě jedna věc, na kterou Tomáš na boardu hodně tlačil --- ukazatel
 
 ---
 
-**Od:** Martin D. (Business Owner)
-**Komu:** Jana P.
-**Kopie:** DL-FinancialHealth-Core
-**Datum:** 5. 5. 2025, 11:23
+**Od:** Martin D. (Business Owner)\
+**Komu:** Jana P.\
+**Kopie:** DL-FinancialHealth-Core\
+**Datum:** 5. 5. 2025, 11:23\
 **Předmět:** RE: Kickoff Finanční ukazatel --- shrnutí a další kroky
 
 Jani,
@@ -59,8 +59,8 @@ Martin
 
 ---
 
-**Přeposlal:** Martin D.
-**Původní odesílatel:** Petr N. (Team Lead, FE)
+**Přeposlal:** Martin D.\
+**Původní odesílatel:** Petr N. (Team Lead, FE)\
 **Datum původní zprávy:** 5. 5. 2025, 9:48
 
 > Martine, k tomu finančnímu ukazateli na home screenu --- aktuálně máme na domovské obrazovce 4 hlavní komponenty (notifikace, účty, rychlé akce, karusel nabídek) a výkon už teď není ideální. Na starších zařízeních (cca 30 % naší userbase) je render time domovské obrazovky kolem 2,8 s. Pokud přidáme další komponentu s animací (ten barevný kruh, o kterém se mluvilo), může to render time dostat přes 3,5 s, což je nad naším SLA.

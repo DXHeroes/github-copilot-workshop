@@ -1,9 +1,9 @@
 # Emailový thread --- Změna priorit + Compliance
 
-**Od:** Tomáš K. (CTO)
-**Komu:** Jana P., Martin D.
-**Kopie:** DL-FinancialHealth-Core, Eva M. (Legal)
-**Datum:** 19. 5. 2025, 7:41
+**Od:** Tomáš K. (CTO)\
+**Komu:** Jana P., Martin D.\
+**Kopie:** DL-FinancialHealth-Core, Eva M. (Legal)\
+**Datum:** 19. 5. 2025, 7:41\
 **Předmět:** Finanční ukazatel --- úprava priorit a timeline
 
 Jano, Martine,
@@ -23,9 +23,9 @@ Tomáš
 
 ---
 
-**Přeposlal:** Tomáš K.
-**Původní odesílatel:** Eva M. (Legal & Compliance)
-**Datum původní zprávy:** 18. 5. 2025, 16:12
+**Přeposlal:** Tomáš K.\
+**Původní odesílatel:** Eva M. (Legal & Compliance)\
+**Datum původní zprávy:** 18. 5. 2025, 16:12\
 **Předmět:** Regulatorní poznámky k projektu Finanční skóre
 
 Tomáši,
@@ -64,10 +64,10 @@ Eva
 
 ---
 
-**Od:** Jana P.
-**Komu:** Tomáš K.
-**Kopie:** Martin D.
-**Datum:** 19. 5. 2025, 9:15
+**Od:** Jana P.\
+**Komu:** Tomáš K.\
+**Kopie:** Martin D.\
+**Datum:** 19. 5. 2025, 9:15\
 **Předmět:** RE: Finanční ukazatel --- úprava priorit a timeline
 
 Tomáši,
