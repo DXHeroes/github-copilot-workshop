@@ -1,12 +1,21 @@
 #!/usr/bin/env bash
-# Založí nový epic z šablony: novy-epic.sh "Název epicu"
+# Založí nový epic z šablony: novy-epic.sh <projekt> "Název epicu"
 set -euo pipefail
 
-nazev="${1:?Použití: novy-epic.sh \"Název epicu\"}"
+pouziti='Použití: novy-epic.sh <projekt> "Název epicu"'
+projekt="${1:?$pouziti}"
+nazev="${2:?$pouziti}"
 
 repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../../.." && pwd)"
 sablona="$(cd "$(dirname "${BASH_SOURCE[0]}")/../assets" && pwd)/epic.template.md"
-cilova_slozka="$repo_root/outputs"
+podklady="$repo_root/docs/$projekt"
+cilova_slozka="$repo_root/outputs/$projekt"
+
+if [[ ! "$projekt" =~ ^[a-z0-9-]+$ ]] || [ ! -d "$podklady" ]; then
+  echo "Neznámý projekt: $projekt. Dostupné projekty:" >&2
+  ls -1 "$repo_root/docs" >&2
+  exit 1
+fi
 
 slug="$(printf '%s' "$nazev" \
   | tr '[:upper:]' '[:lower:]' \
@@ -20,7 +29,7 @@ cil="$cilova_slozka/$slug.epic.md"
 
 mkdir -p "$cilova_slozka"
 {
-  echo "<!-- Vytvořeno: $(date +%Y-%m-%d) | Zdroj podkladů: docs/ -->"
+  echo "<!-- Vytvořeno: $(date +%Y-%m-%d) | Zdroj podkladů: docs/$projekt/ -->"
   sed "1s|.*|# Epic: $nazev|" "$sablona"
 } > "$cil"
 
