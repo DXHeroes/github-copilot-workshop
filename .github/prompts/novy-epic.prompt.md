@@ -1,5 +1,5 @@
 ---
-description: "Spustí analytika, který z podkladů projektu připraví epic a nechá ho zkontrolovat."
+description: "Spustí analytika, který z podkladů projektu připraví epic a předloží otevřené rozpory."
 argument-hint: "téma epicu"
 agent: analytik
 ---
@@ -10,4 +10,4 @@ Vytvoř epic na téma: ${input:tema:např. MVP úsporných cílů}
 
 Projekt: ${input:projekt:smart-savings nebo financni-ukazatel}
 
-Postupuj podle svého operating flow. Než budeš pokračovat user stories, ukaž mi nálezy recenzenta a otevřené rozpory a počkej na moje rozhodnutí.
+Postupuj podle svého operating flow. Než budeš pokračovat user stories, ukaž mi otevřené rozpory a počkej na moje rozhodnutí.

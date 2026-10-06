@@ -1,6 +1,6 @@
 ---
 name: tvorba-epicu
-description: "Založí epic skriptem ze šablony, vyplní ho z podkladů v docs/<projekt>/ a zkontroluje ho validátorem. Použij, když má vzniknout nebo se upravit epic (*.epic.md) pro Smart Savings nebo Finanční ukazatel."
+description: "Založí epic skriptem ze šablony, vyplní ho z podkladů v docs/<projekt>/ a zkontroluje ho validátorem. Použij, když má vzniknout nebo se upravit epic (*.epic.md)."
 argument-hint: "projekt a název epicu"
 ---
 
@@ -20,8 +20,8 @@ Na macOS a Linuxu spouštěj skripty přes `python3`, na Windows přes `python`.
    .github/skills/tvorba-epicu/scripts/novy-epic.sh smart-savings "MVP úsporných cílů"
    ```
 
-2. **Získej fakta** — vycházej z rozboru podkladů, který ti předal agent. Když žádný nemáš,
-   přečti všechny soubory v `docs/<projekt>/`. Podklady jiného projektu nečti.
+2. **Získej fakta** — přečti všechny soubory v `docs/<projekt>/` kromě `dod-sablona.md`.
+   Podklady jiného projektu nečti.
 
 3. **Vyplň sekce** — každou sekci šablony podle [pravidel pro epic](../../instructions/epic.instructions.md).
    Rozpory jdou do tabulky v sekci „Otevřené otázky a rozpory“, nerozhoduj je.
@@ -34,7 +34,7 @@ Na macOS a Linuxu spouštěj skripty přes `python3`, na Windows přes `python`.
    ```
 
    Validátor hlídá jen strukturu: sekce, zbylé zástupné texty, prázdné tabulky a existenci citovaných
-   zdrojů. Jestli je obsah správně, posuzuje recenzent.
+   zdrojů. Jestli je obsah správně, posuzuje člověk, třeba přes `/kontrola-dod`.
 
 ## Kdy skill nepoužívat
 

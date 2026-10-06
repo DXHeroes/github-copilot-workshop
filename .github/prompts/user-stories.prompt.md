@@ -1,8 +1,7 @@
 ---
 description: "Z hotového epicu vytvoří user stories ve formátu, který umí převést skill backlog-do-issues."
 argument-hint: "cesta k epicu"
-agent: agent
-tools: [read, search, edit]
+agent: analytik
 ---
 
 <!-- Prompt = vstupní bod. Formát stories je v user-stories.instructions.md, ne tady. -->
