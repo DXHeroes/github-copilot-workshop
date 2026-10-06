@@ -21,7 +21,8 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 
 WRITE_TOOL = re.compile(r"edit|create|write|replace|insert|patch|delete|remove|rename|move|notebook", re.I)
 SHELL_TOOL = re.compile(r"bash|powershell|shell|terminal|command|execute", re.I)
-PATH_KEY = re.compile(r"path|file|uri|dir|target|dest|source", re.I)
+# Matches keys such as path, filePath, file_path, files, uri, dirPath; not content keys such as file_text.
+PATH_KEY = re.compile(r"(?:path|paths|file|files|filename|uri|uris|dir|directory|target|destination)$", re.I)
 PATCH_HEADER = re.compile(r"^\*\*\* (?:Add|Update|Delete) File: (.+)$|^\*\*\* Move to: (.+)$", re.M)
 
 DOCS_IN_COMMAND = re.compile(r"(?<![\w.-])(?:\./)?" + PROTECTED_DIR + r"[/\\]")

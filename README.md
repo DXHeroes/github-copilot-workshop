@@ -17,8 +17,8 @@ rozpory najít a zapsat, ne o tom je rozhodnout.
 - **`main`** — AI artefakty jsou záměrně **prázdné kostry s TODO**. Hotový je jen skript `novy-epic.sh`
   a hook `ochrana-docs`, který chrání `docs/` před zápisem. Tady začínáš.
 - **[`ukazka`](https://github.com/DXHeroes/github-copilot-workshop/tree/ukazka)** — kompletní
-  řešení nad Smart Savings, vrstvu po vrstvě. Každá vrstva má vlastní tag (`02-instructions`
-  … `07-skladani`), takže si můžeš stáhnout přesně ten stav, který tě zajímá.
+  řešení nad Smart Savings. Když tě zajímá jedna vrstva, otevři rovnou její soubor
+  z tabulky níže.
 
 ## 🧱 AI artefakty v tomto repu
 
