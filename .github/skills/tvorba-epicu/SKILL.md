@@ -1,7 +1,7 @@
 ---
 name: tvorba-epicu
 description: "TODO: co skill dělá a kdy se má načíst. Popis je jediné, podle čeho se skill vybírá."
-argument-hint: "název epicu"
+argument-hint: "projekt a název epicu"
 ---
 
 # Tvorba epicu
@@ -19,7 +19,9 @@ argument-hint: "název epicu"
    ```
 
 2. TODO: co má agent udělat s podklady v `docs/`
+
 3. TODO: jak vyplnit sekce šablony
+
 4. TODO: jak zkontrolovat výsledek
 
 ## Kdy skill nepoužívat

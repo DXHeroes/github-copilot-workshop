@@ -1,20 +1,19 @@
-# Analytická dokumentace — Smart Savings a Finanční ukazatel
+# Analytická dokumentace
 
-Repo slouží k přípravě analytických výstupů z podkladů dvou fiktivních bankovních projektů.
+Repo slouží k přípravě analytických výstupů (epic, user stories) z podkladů k projektům.
 
 ## Struktura
 
-- `docs/<projekt>/` — podklady jednoho projektu: emaily, zápisy ze schůzek, poznámky architekta,
-  UX výzkum a `dod-sablona.md`. Pocházejí od různých lidí a **úmyslně si odporují**.
-  - `docs/smart-savings/` — Smart Savings: úsporné cíle a doporučené převody na spořicí účet.
-  - `docs/financni-ukazatel/` — Finanční ukazatel: přehled o finančním zdraví klienta.
-- `outputs/<projekt>/` — vygenerované výstupy.
+- `docs/<projekt>/` — podklady jednoho projektu: emaily, zápisy ze schůzek, poznámky, výzkum
+  a `dod-sablona.md` s Definition of Done. Pocházejí od různých lidí a můžou si odporovat.
+  Každá podsložka `docs/` je jeden projekt.
+- `outputs/<projekt>/` — vygenerované výstupy: epic a user stories.
 
 ## Pravidla práce
 
 - **Pracuj vždy jen s jedním projektem.** Když není jasné s kterým, zeptej se.
 - **Zdroj pravdy je `docs/<projekt>/`.** Nic si nedomýšlej. Co v podkladech není, je otevřená otázka.
-  Podklady druhého projektu nepoužívej.
+  Podklady jiného projektu nepoužívej.
 - **Rozpory se nerozhodují, rozpory se zapisují.** Uveď obě varianty, zdroje a vlastníka rozhodnutí.
 - **Struktura výstupu se bere ze šablony**, nikdy se nevymýšlí ad hoc.
 - Výstupy jsou česky, věcně, v odrážkách.

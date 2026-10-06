@@ -50,8 +50,8 @@
 
 ## 8. Otevřené otázky a rozpory
 
-| #   | Téma     | Varianta A (zdroj)      | Varianta B (zdroj)      | Kdo rozhodne |
-| --- | -------- | ----------------------- | ----------------------- | ------------ |
+| #   | Téma     | Varianta A (zdroj)     | Varianta B (zdroj)     | Kdo rozhodne |
+| --- | -------- | ---------------------- | ---------------------- | ------------ |
 | 1   | [Téma 1] | [Tvrzení] ([zdroj.md]) | [Tvrzení] ([zdroj.md]) | [Role]       |
 
 ## 9. Poznámky a další informace

@@ -7,9 +7,9 @@ Podklady v `docs/` popisují dva fiktivní bankovní projekty. Pocházejí od r�
 (PM, business owner, architekt, legal, UX) a **úmyslně si odporují** — cvičení je o tom
 rozpory najít a zapsat, ne o tom je rozhodnout.
 
-| Projekt           | Podklady                  | K čemu je                                  |
-| ----------------- | ------------------------- | ------------------------------------------ |
-| Smart Savings     | `docs/smart-savings/`     | hotová ukázka v branchi `ukazka`           |
+| Projekt           | Podklady                  | K čemu je                                   |
+| ----------------- | ------------------------- | ------------------------------------------- |
+| Smart Savings     | `docs/smart-savings/`     | hotová ukázka v branchi `ukazka`            |
 | Finanční ukazatel | `docs/financni-ukazatel/` | cvičení — postav si framework sám na `main` |
 
 ## 🌿 Branche
@@ -17,45 +17,20 @@ rozpory najít a zapsat, ne o tom je rozhodnout.
 - **`main`** — AI artefakty jsou záměrně **prázdné kostry s TODO**. Hotový je jen skript `novy-epic.sh`
   a hook `ochrana-docs`, který chrání `docs/` před zápisem. Tady začínáš.
 - **[`ukazka`](https://github.com/DXHeroes/github-copilot-workshop/tree/ukazka)** — kompletní
-  řešení nad Smart Savings. Když tě zajímá jedna vrstva, otevři rovnou její soubor
-  z tabulky níže.
+  řešení nad Smart Savings. Když tě zajímá jedna vrstva, otevři rovnou její složku
+  v `.github/` podle tabulky níže.
 
 ## 🧱 AI artefakty v tomto repu
 
-| Artefakt        | Soubor                                        | K čemu je                          |
-| --------------- | --------------------------------------------- | ---------------------------------- |
-| agent instrukce | `.github/copilot-instructions.md`             | vždy platný kontext projektu       |
-| instructions    | `.github/instructions/epic.instructions.md`   | pravidla pro soubory `*.epic.md`   |
-| prompt          | `.github/prompts/novy-epic.prompt.md`         | vstupní bod `/novy-epic`            |
-| agent           | `.github/agents/analytik.agent.md`            | role a operating flow              |
-| skill           | `.github/skills/tvorba-epicu/`                | postup nad jedním typem artefaktu  |
-| script          | `.../tvorba-epicu/scripts/novy-epic.sh`       | deterministický krok místo modelu  |
-| template        | `.../tvorba-epicu/assets/epic.template.md`    | struktura výstupu                  |
-| hook            | `.github/hooks/ochrana-docs.json` (+ `.py`)   | kontrola, která platí vždycky      |
-
-## 🧭 Kterou vrstvu použít
-
-```mermaid
-graph TD
-    Start((úkol)) --> Q1
-    Start -->|a navíc| Q4
-    Q1{Má to platit<br/>v každé konverzaci?} -->|ano| I[copilot-instructions.md]
-    Q1 -->|jen pro určité soubory| PI[*.instructions.md<br/>s applyTo]
-    Q1 -->|ne| Q2{Spouští to<br/>člověk na požádání?}
-    Q2 -->|ano| P[prompt file]
-    Q2 -->|ne, model si to<br/>vybere sám| Q3{Je to postup nad<br/>jedním typem výstupu?}
-    Q3 -->|ano| S[skill<br/>+ skript na deterministické kroky]
-    Q3 -->|ne, je to role<br/>s vlastními nástroji| A[custom agent]
-    Q4{Musí to platit<br/>bez výjimky?} -->|ano| H[hook]
-```
-
-| Vrstva       | Náklad                              | Přínos                                          |
-| ------------ | ----------------------------------- | ----------------------------------------------- |
-| instructions | pár řádků, ale žerou kontext vždycky | konvence, které nemusíš opakovat v promptu       |
-| prompt       | jeden soubor                        | ověřený prompt používá celý tým                 |
-| skill        | `SKILL.md` + skripty a šablony      | opakovatelný postup, bez MCP serveru            |
-| agent        | role, hranice, výběr nástrojů       | delegace s jasným místem, kde rozhoduje člověk  |
-| hook         | skript a jeho údržba                | kontrola, která nezávisí na tom, co model udělá |
+| Artefakt           | Kde                                      | Proč                                                                         |
+| ------------------ | ---------------------------------------- | ---------------------------------------------------------------------------- |
+| instrukce projektu | `.github/copilot-instructions.md`        | kontext, který platí v každé konverzaci                                      |
+| instruction files  | `.github/instructions/*.instructions.md` | pravidla jen pro určité soubory (`applyTo`), jinde nezabírají kontext        |
+| prompt files       | `.github/prompts/*.prompt.md`            | vstupní bod workflow, spouští ho člověk přes `/název`                        |
+| custom agenti      | `.github/agents/*.agent.md`              | role s vlastními nástroji a hranicemi, subagent šetří kontext hlavního chatu |
+| skills             | `.github/skills/<název>/`                | opakovatelný postup nad jedním typem výstupu                                 |
+| skripty a šablony  | složky `scripts/` a `assets/` ve skillu  | deterministické kroky, které nedělá model                                    |
+| hooks              | `.github/hooks/*.json`                   | kontrola, která platí vždycky, ať model udělá cokoli                         |
 
 ## 🗂️ Struktura repa
 
