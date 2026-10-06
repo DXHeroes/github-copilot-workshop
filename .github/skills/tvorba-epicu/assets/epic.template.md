@@ -4,13 +4,17 @@
 
 [Stručný popis - proč tento epic potřebujeme, jaký problém řeší, jaká je současná situace]
 
-## 2. Cíle / Byznysová hodnota
+## 2. Cílová skupina
+
+- [Kdo bude funkci používat a kdo ne]
+
+## 3. Cíle / Byznysová hodnota
 
 - [Cíl 1]
 - [Cíl 2]
 - [Cíl 3]
 
-## 3. Rozsah
+## 4. Rozsah
 
 ### V rozsahu
 
@@ -24,36 +28,40 @@
 - [Omezení 1]
 - [Omezení 2]
 
-## 4. Závislosti
+## 5. Závislosti
 
 - [Externí závislost 1]
 - [Interní závislost 1]
 - [Předpoklad 1]
 
-## 5. Uživatelské příběhy
+## 6. Regulatorní a compliance požadavky
+
+- [Požadavek 1] ([zdroj.md])
+
+## 7. Uživatelské příběhy
 
 - [ ] [ID-01] [Název uživatelského příběhu 1]
 - [ ] [ID-02] [Název uživatelského příběhu 2]
 - [ ] [ID-03] [Název uživatelského příběhu 3]
 
-## 6. Rizika
+## 8. Rizika
 
 | Riziko           | Dopad                  | Pravděpodobnost        | Zmírnění             |
 | ---------------- | ---------------------- | ---------------------- | -------------------- |
 | [Popis rizika 1] | [Vysoký/Střední/Nízký] | [Vysoká/Střední/Nízká] | [Strategie zmírnění] |
 | [Popis rizika 2] | [Vysoký/Střední/Nízký] | [Vysoká/Střední/Nízká] | [Strategie zmírnění] |
 
-## 7. Metriky úspěchu
+## 9. Metriky úspěchu
 
 - [Metrika 1: jak budeme měřit úspěch]
 - [Metrika 2: jak budeme měřit úspěch]
 
-## 8. Otevřené otázky a rozpory
+## 10. Otevřené otázky a rozpory
 
-| #   | Téma     | Varianta A (zdroj)      | Varianta B (zdroj)      | Kdo rozhodne |
-| --- | -------- | ----------------------- | ----------------------- | ------------ |
+| #   | Téma     | Varianta A (zdroj)     | Varianta B (zdroj)     | Kdo rozhodne |
+| --- | -------- | ---------------------- | ---------------------- | ------------ |
 | 1   | [Téma 1] | [Tvrzení] ([zdroj.md]) | [Tvrzení] ([zdroj.md]) | [Role]       |
 
-## 9. Poznámky a další informace
+## 11. Poznámky a další informace
 
 [Jakékoli další relevantní informace, odkazy na dokumenty, schůzky, atd.]

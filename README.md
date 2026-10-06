@@ -7,9 +7,9 @@ Podklady v `docs/` popisují dva fiktivní bankovní projekty. Pocházejí od r�
 (PM, business owner, architekt, legal, UX) a **úmyslně si odporují** — cvičení je o tom
 rozpory najít a zapsat, ne o tom je rozhodnout.
 
-| Projekt           | Podklady                  | K čemu je                                  |
-| ----------------- | ------------------------- | ------------------------------------------ |
-| Smart Savings     | `docs/smart-savings/`     | hotová ukázka v branchi `ukazka`           |
+| Projekt           | Podklady                  | K čemu je                                   |
+| ----------------- | ------------------------- | ------------------------------------------- |
+| Smart Savings     | `docs/smart-savings/`     | hotová ukázka v branchi `ukazka`            |
 | Finanční ukazatel | `docs/financni-ukazatel/` | cvičení — postav si framework sám na `main` |
 
 ## 🌿 Branche
@@ -22,16 +22,25 @@ rozpory najít a zapsat, ne o tom je rozhodnout.
 
 ## 🧱 AI artefakty v tomto repu
 
-| Artefakt        | Soubor                                        | K čemu je                          |
-| --------------- | --------------------------------------------- | ---------------------------------- |
-| agent instrukce | `.github/copilot-instructions.md`             | vždy platný kontext projektu       |
-| instructions    | `.github/instructions/epic.instructions.md`   | pravidla pro soubory `*.epic.md`   |
-| prompt          | `.github/prompts/novy-epic.prompt.md`         | vstupní bod `/novy-epic`            |
-| agent           | `.github/agents/analytik.agent.md`            | role a operating flow              |
-| skill           | `.github/skills/tvorba-epicu/`                | postup nad jedním typem artefaktu  |
-| script          | `.../tvorba-epicu/scripts/novy-epic.sh`       | deterministický krok místo modelu  |
-| template        | `.../tvorba-epicu/assets/epic.template.md`    | struktura výstupu                  |
-| hook            | `.github/hooks/ochrana-docs.json` (+ `.py`)   | kontrola, která platí vždycky      |
+| Artefakt        | Soubor                                              | K čemu je                              |
+| --------------- | --------------------------------------------------- | -------------------------------------- |
+| agent instrukce | `.github/copilot-instructions.md`                   | vždy platný kontext projektu           |
+| instructions    | `.github/instructions/epic.instructions.md`         | pravidla pro soubory `*.epic.md`       |
+| instructions    | `.github/instructions/user-stories.instructions.md` | formát `*.stories.md`                  |
+| instructions    | `.github/instructions/api.instructions.md`          | konvence pro návrh API v `api/`        |
+| prompt          | `.github/prompts/novy-epic.prompt.md`               | vstupní bod `/novy-epic`               |
+| prompt          | `.github/prompts/rozpory.prompt.md`                 | `/rozpory`: oponentní čtení podkladů   |
+| prompt          | `.github/prompts/user-stories.prompt.md`            | `/user-stories` z hotového epicu       |
+| agent           | `.github/agents/analytik.agent.md`                  | koordinátor: role, flow, kontrolní bod |
+| subagent        | `.github/agents/rozbor-podkladu.agent.md`           | přečte podklady ve vlastním kontextu   |
+| subagent        | `.github/agents/recenzent.agent.md`                 | zkontroluje epic proti DoD, jen čte    |
+| skill           | `.github/skills/tvorba-epicu/`                      | postup nad jedním typem artefaktu      |
+| script          | `.../tvorba-epicu/scripts/novy-epic.sh`             | deterministický krok místo modelu      |
+| script          | `.../tvorba-epicu/scripts/validate_epic.py`         | kontrola struktury epicu               |
+| template        | `.../tvorba-epicu/assets/epic.template.md`          | struktura výstupu                      |
+| skill           | `.github/skills/backlog-do-issues/`                 | `/backlog-do-issues`: skript místo MCP |
+| hook            | `.github/hooks/ochrana-docs.json` (+ `.py`)         | zamítne zápis do `docs/`               |
+| hook            | `.github/hooks/formatovani-md.json` (+ `.py`)       | po zápisu `.md` soubor zformátuje      |
 
 ## 🧭 Kterou vrstvu použít
 
@@ -49,19 +58,34 @@ graph TD
     Q4{Musí to platit<br/>bez výjimky?} -->|ano| H[hook]
 ```
 
-| Vrstva       | Náklad                              | Přínos                                          |
-| ------------ | ----------------------------------- | ----------------------------------------------- |
-| instructions | pár řádků, ale žerou kontext vždycky | konvence, které nemusíš opakovat v promptu       |
-| prompt       | jeden soubor                        | ověřený prompt používá celý tým                 |
-| skill        | `SKILL.md` + skripty a šablony      | opakovatelný postup, bez MCP serveru            |
-| agent        | role, hranice, výběr nástrojů       | delegace s jasným místem, kde rozhoduje člověk  |
-| hook         | skript a jeho údržba                | kontrola, která nezávisí na tom, co model udělá |
+| Vrstva       | Náklad                               | Přínos                                          |
+| ------------ | ------------------------------------ | ----------------------------------------------- |
+| instructions | pár řádků, ale žerou kontext vždycky | konvence, které nemusíš opakovat v promptu      |
+| prompt       | jeden soubor                         | ověřený prompt používá celý tým                 |
+| skill        | `SKILL.md` + skripty a šablony       | opakovatelný postup, bez MCP serveru            |
+| agent        | role, hranice, výběr nástrojů        | delegace s jasným místem, kde rozhoduje člověk  |
+| hook         | skript a jeho údržba                 | kontrola, která nezávisí na tom, co model udělá |
 
 ## 🗂️ Struktura repa
 
 - `docs/<projekt>/` — chaotické podklady k projektu a `dod-sablona.md` (zdroj pravdy)
 - `outputs/<projekt>/` — vygenerované výstupy
 - `.github/` — vlastní AI framework nad Copilotem
+
+## ▶️ Spuštění ukázky
+
+1. Nainstaluj formátovač pro hook: `pip install -r requirements.txt` (Python 3.10+).
+2. Otevři repo ve VS Code jako důvěryhodnou složku (Workspace Trust), jinak se hooky nespustí.
+3. V chatu zvol prostředí **Local**. Prompt files a subagenti v ukázce běží v něm.
+4. Spusť `/novy-epic` s projektem `smart-savings`.
+
+Testy skriptů a hooků (na Windows `python` místo `python3`):
+
+```sh
+python3 .github/skills/tvorba-epicu/scripts/test_validate_epic.py
+python3 .github/skills/backlog-do-issues/scripts/test_create_issues.py
+python3 .github/hooks/test_hooks.py
+```
 
 ## ▶️ Jak s tím pracovat
 

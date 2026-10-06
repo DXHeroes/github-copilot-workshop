@@ -1,11 +1,13 @@
 ---
-description: "TODO: co tenhle prompt spustí."
+description: "Spustí analytika, který z podkladů projektu připraví epic a nechá ho zkontrolovat."
 argument-hint: "téma epicu"
 agent: analytik
 ---
 
 <!-- Prompt = vstupní bod. Předá kontext a zadání, doménová logika sem nepatří. -->
 
-Vytvoř epic na téma: ${input:tema}
+Vytvoř epic na téma: ${input:tema:např. MVP úsporných cílů}
 
-TODO: doplň, co dalšího má prompt předat (odkaz na podklady, formát výstupu).
+Projekt: ${input:projekt:smart-savings nebo financni-ukazatel}
+
+Postupuj podle svého operating flow. Než budeš pokračovat user stories, ukaž mi nálezy recenzenta a otevřené rozpory a počkej na moje rozhodnutí.
