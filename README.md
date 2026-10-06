@@ -32,6 +32,29 @@ rozpory najít a zapsat, ne o tom je rozhodnout.
 | skripty a šablony  | složky `scripts/` a `assets/` ve skillu  | deterministické kroky, které nedělá model                                    |
 | hooks              | `.github/hooks/*.json`                   | kontrola, která platí vždycky, ať model udělá cokoli                         |
 
+Jak na sebe artefakty navazují:
+
+```mermaid
+graph LR
+    Clovek((člověk)) -->|"/název"| Prompt["prompt file"]
+    Clovek -->|"výběr v chatu"| Agent
+    Prompt -->|"agent:"| Agent["custom agent"]
+    Agent -->|"předá práci"| Sub["další agent<br/>jako subagent"]
+    Agent -->|"postupuje podle"| Skill["skill"]
+    Sub -->|"postupuje podle"| Skill
+    Skill -->|"spustí"| Skript["skripty a šablony"]
+    Docs[("docs/<br/>podklady")] -->|"čte"| Skill
+    Skript -->|"založí"| Vystup[("outputs/, api/<br/>výstupy")]
+
+    Instr["copilot-instructions.md"] -.->|"vždy v kontextu"| Agent
+    PInstr["*.instructions.md"] -.->|"podle applyTo"| Vystup
+    Hook["hooks"] -.->|"chrání před zápisem"| Docs
+    Hook -.->|"formátují"| Vystup
+
+    style Docs fill:#FFE4B5
+    style Vystup fill:#90EE90
+```
+
 ## 🗂️ Struktura repa
 
 - `docs/<projekt>/` — chaotické podklady k projektu a `dod-sablona.md` (zdroj pravdy)
