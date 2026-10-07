@@ -72,7 +72,7 @@ graph LR
 Skripty a hooky mají testy, které můžeš spustit i ručně (na Windows `python` místo `python3`):
 
 ```sh
+python3 .github/skills/tvorba-epicu/scripts/test_novy_epic.py
 python3 .github/skills/tvorba-epicu/scripts/test_validate_epic.py
-python3 .github/skills/backlog-do-issues/scripts/test_create_issues.py
 python3 .github/hooks/test_hooks.py
 ```

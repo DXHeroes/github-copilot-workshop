@@ -5,7 +5,7 @@ applyTo: "outputs/**/*.stories.md"
 
 # Pravidla pro user stories
 
-<!-- Formát je smlouva se skriptem backlog-do-issues: ten čte nadpisy ### US-xx. -->
+<!-- Instructions vázané na cestu: formát platí jen pro *.stories.md, jinde nezabírá kontext. -->
 
 ## Struktura
 

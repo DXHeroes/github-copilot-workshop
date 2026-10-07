@@ -26,4 +26,4 @@ Zastupuje business analytika. Vlastní epic, user stories a jejich otevřené ot
 - Nerozhoduje rozpory, jen je zapisuje.
 - Nekontroluje výstup proti DoD. To spouští člověk přes `/kontrola-dod`.
 - Nenavrhuje API. To dělá `api-architekt`.
-- Nezakládá issues ani nic mimo repozitář. To dělá člověk přes `/backlog-do-issues`.
+- Nedělá nic mimo repozitář.
