@@ -14,7 +14,7 @@ rozpory najít a zapsat, ne o tom je rozhodnout.
 
 ## 🌿 Branche
 
-- **`main`** — AI artefakty jsou záměrně **prázdné kostry s TODO**. Hotový je jen skript `novy-epic.sh`
+- **`main`** — AI artefakty jsou záměrně **prázdné kostry s TODO**. Hotový je jen skript `novy_epic.py`
   a hook `ochrana-docs`, který chrání `docs/` před zápisem. Tady začínáš.
 - **[`ukazka`](https://github.com/DXHeroes/github-copilot-workshop/tree/ukazka)** — kompletní
   řešení nad Smart Savings. Když tě zajímá jedna vrstva, otevři rovnou její složku
@@ -80,7 +80,7 @@ graph LR
 graph LR
     Prompt[/novy-epic<br/>prompt/] --> Agent[agent<br/>analytik]
     Agent --> Skill[skill<br/>tvorba-epicu]
-    Skill --> Script[script<br/>novy-epic.sh]
+    Skill --> Script[script<br/>novy_epic.py]
     Tmpl[template<br/>epic.template.md] --> Script
     Docs[docs/*/<br/>chaotické podklady] --> Skill
     Script --> Epic[outputs/*/<br/>*.epic.md]

@@ -8,14 +8,16 @@ argument-hint: "projekt a název epicu"
 
 <!-- Skill = postup nad jedním typem artefaktu. Deterministické kroky patří do skriptu. -->
 
+Na macOS a Linuxu spouštěj skripty přes `python3`, na Windows přes `python`.
+
 ## Postup
 
-1. **Založ soubor** — spusť [novy-epic.sh](./scripts/novy-epic.sh) s projektem
+1. **Založ soubor** — spusť [novy_epic.py](./scripts/novy_epic.py) s projektem
    (název složky v `docs/`) a názvem epicu. Skript zkopíruje [šablonu](./assets/epic.template.md)
    do `outputs/<projekt>/<slug>.epic.md`.
 
    ```sh
-   .github/skills/tvorba-epicu/scripts/novy-epic.sh financni-ukazatel "MVP finančního ukazatele"
+   python3 .github/skills/tvorba-epicu/scripts/novy_epic.py financni-ukazatel "MVP finančního ukazatele"
    ```
 
 2. TODO: co má agent udělat s podklady v `docs/`
