@@ -10,7 +10,7 @@ applyTo: "outputs/**/*.epic.md"
 ## Struktura
 
 - Epic má přesně sekce ze [šablony](../skills/tvorba-epicu/assets/epic.template.md), ve stejném pořadí a se stejnými nadpisy. Žádné sekce navíc.
-- Soubor se jmenuje `outputs/<projekt>/<slug>.epic.md` a zakládá ho skript `novy-epic.sh`, nikdy model.
+- Soubor se jmenuje `outputs/<projekt>/<slug>.epic.md` a zakládá ho skript `novy_epic.py`, nikdy model.
 - V hotovém epicu nezůstane žádný zástupný text ze šablony v hranatých závorkách.
 
 ## Práce se zdroji
