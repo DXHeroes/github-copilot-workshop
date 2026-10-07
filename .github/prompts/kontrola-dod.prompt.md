@@ -7,8 +7,9 @@ tools: [read, search]
 
 <!-- Prompt = vstupní bod. Kontrolu spouští člověk, když je výstup hotový, ne agent po každém kroku. -->
 
-Zkontroluj `${input:soubor:outputs/smart-savings/mvp-uspornych-cilu.epic.md}` proti `docs/<projekt>/dod-sablona.md`.
+Zkontroluj `${input:soubor:cesta k výstupu v outputs/ nebo api/}` proti `docs/<projekt>/dod-sablona.md`.
 Projekt je složka z cesty k souboru: `outputs/<projekt>/…` nebo `api/<projekt>.openapi.yaml`.
+Když cesta chybí nebo soubor neexistuje, zeptej se na ni a nic nekontroluj.
 
 Podle typu souboru vezmi jen jednu sekci DoD:
 
