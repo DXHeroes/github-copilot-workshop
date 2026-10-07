@@ -5,8 +5,6 @@ applyTo: "outputs/**/*.epic.md"
 
 # Pravidla pro epic
 
-<!-- Instructions = pravidla a omezení, která platí vždycky. Žádné očíslované kroky. -->
-
 ## Struktura
 
 - Epic má přesně sekce ze [šablony](../skills/tvorba-epicu/assets/epic.template.md), ve stejném pořadí a se stejnými nadpisy. Žádné sekce navíc.

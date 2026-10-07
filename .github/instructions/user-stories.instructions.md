@@ -5,8 +5,6 @@ applyTo: "outputs/**/*.stories.md"
 
 # Pravidla pro user stories
 
-<!-- Instructions vázané na cestu: formát platí jen pro *.stories.md, jinde nezabírá kontext. -->
-
 ## Struktura
 
 - Soubor se jmenuje `outputs/<projekt>/<slug>.stories.md`, stejný slug jako epic, ze kterého vychází.

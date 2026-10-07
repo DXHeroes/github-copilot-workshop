@@ -5,8 +5,6 @@ applyTo: "api/**"
 
 # Pravidla pro návrh API
 
-<!-- Instructions vázané na cestu: platí jen pro soubory v api/, jinde nezabírají kontext. -->
-
 ## Formát
 
 - OpenAPI 3.1 v YAML, jeden soubor na projekt: `api/<projekt>.openapi.yaml`.
