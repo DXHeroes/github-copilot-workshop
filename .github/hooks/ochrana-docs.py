@@ -1,28 +1,30 @@
 # preToolUse hook: the agent must not write to docs/, the source documents are the source of truth.
 # A hook is a deterministic check outside the model. What must always hold does not belong only in instructions.
 #
-# Registered in ochrana-docs.json (python3 on macOS/Linux, python on Windows).
-# Note: preToolUse is fail-closed. If python is missing, the agent cannot run any tool.
+# Registered in ochrana-docs.json (python3 on macOS/Linux, python on Windows). It runs in both VS Code harnesses:
+# - Local sends `tool_name` + `tool_input` and blocks only on exit 2. If python is missing or the hook
+#   crashes, Local shows a warning and the tool runs anyway.
+# - Copilot sends `toolName` + `toolArgs` (a JSON string) and denies on any non-zero exit or crash.
+#   If python is missing there, the agent cannot run any tool.
 #
-# Payloads differ by harness: Copilot sends `toolName` + `toolArgs` (often a JSON string),
-# VS Code Local sends `tool_name` + `tool_input`. Tool names differ too, so tools are classified
-# by name patterns instead of an exact list.
-# File tools are checked reliably by their path arguments. Shell commands are best effort:
-# a command that changes directory first (cd docs && ...) is not detected.
+# File tools are checked by their path arguments. Commands (terminal, tasks) are best effort:
+# a command that changes directory first (cd docs && ...) is not detected, and copying out of docs/
+# is blocked too, because the agent has no reason to copy the source documents.
 import json
-import os
 import re
 import sys
-from pathlib import Path, PurePosixPath
-from urllib.parse import unquote, urlparse
+from pathlib import Path
 
 PROTECTED_DIR = "docs"
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
-WRITE_TOOL = re.compile(r"edit|create|write|replace|insert|patch|delete|remove|rename|move|notebook", re.I)
-SHELL_TOOL = re.compile(r"bash|powershell|shell|terminal|command|execute", re.I)
-# Matches keys such as path, filePath, file_path, files, uri, dirPath; not content keys such as file_text.
-PATH_KEY = re.compile(r"(?:path|paths|file|files|filename|uri|uris|dir|directory|target|destination)$", re.I)
+# Local: create_file, replace_string_in_file, multi_replace_string_in_file, insert_edit_into_file,
+# edit_notebook_file, apply_patch, create_directory. Copilot: create, edit.
+WRITE_TOOL = re.compile(r"create|edit|replace|insert|patch", re.I)
+# filePath, dirPath (Local) and path (Copilot). Content keys such as content or file_text are not paths.
+PATH_KEY = re.compile(r"path$", re.I)
+# Commands of run_in_terminal, bash, powershell and create_and_run_task (command + args).
+COMMAND_KEY = re.compile(r"^(?:command|args)$", re.I)
 PATCH_HEADER = re.compile(r"^\*\*\* (?:Add|Update|Delete) File: (.+)$|^\*\*\* Move to: (.+)$", re.M)
 
 DOCS_IN_COMMAND = re.compile(r"(?<![\w.-])(?:\./)?" + PROTECTED_DIR + r"[/\\]")
@@ -30,6 +32,7 @@ SHELL_WRITE = re.compile(
     r">{1,2}\s*[\"']?(?:\./)?" + PROTECTED_DIR + r"[/\\]"
     r"|\b(?:rm|mv|cp|tee|touch|truncate|unlink|rmdir|mkdir|del|erase|ren|move|copy)\b"
     r"|\bsed\s+(?:-\w*\s+)*-i|\bperl\s+(?:-\w*\s+)*-\w*i"
+    r"|\b(?:python[\d.]*|py|node|ruby|perl)\s+(?:-\w+\s+)*-[ce]\b"
     r"|\bgit\s+(?:rm|mv|checkout|restore)\b"
     r"|\b(?:Set|Add|Clear)-Content\b|\bOut-File\b|\b(?:Remove|Move|Copy|Rename|New)-Item\b",
     re.I,
@@ -41,78 +44,55 @@ REASON = (
 )
 
 
-def parse_args(raw):
-    if isinstance(raw, str):
-        try:
-            return json.loads(raw)
-        except ValueError:
-            return {"command": raw}
-    return raw if raw is not None else {}
-
-
-def collect_paths(value, key=""):
+def strings_under(value, key_pattern, key=""):
     if isinstance(value, dict):
         for child_key, child in value.items():
-            yield from collect_paths(child, child_key)
+            yield from strings_under(child, key_pattern, child_key)
     elif isinstance(value, list):
         for item in value:
-            yield from collect_paths(item, key)
-    elif isinstance(value, str) and PATH_KEY.search(key):
-        yield value
-
-
-def collect_command_text(value):
-    if isinstance(value, dict):
-        for child in value.values():
-            yield from collect_command_text(child)
-    elif isinstance(value, list):
-        for item in value:
-            yield from collect_command_text(item)
-    elif isinstance(value, str):
+            yield from strings_under(item, key_pattern, key)
+    elif isinstance(value, str) and key_pattern.search(key):
         yield value
 
 
 def is_protected(raw_path, cwd):
-    text = raw_path.strip().strip("\"'")
-    if text.startswith("file:"):
-        text = unquote(urlparse(text).path)
-        if re.match(r"^/[A-Za-z]:", text):
-            text = text[1:]
-    text = text.replace("\\", "/")
-
-    path = Path(text)
-    if not path.is_absolute():
-        path = Path(cwd) / path
-    try:
-        relative = Path(os.path.normpath(path)).relative_to(REPO_ROOT)
-    except ValueError:
-        return False
-    parts = PurePosixPath(relative.as_posix()).parts
-    return len(parts) > 0 and parts[0] == PROTECTED_DIR
+    path = Path(raw_path.strip().strip("\"'").replace("\\", "/"))
+    path = (cwd / path).resolve()
+    # The working copy can differ from the hook's own repository, e.g. in a worktree session.
+    for root in {REPO_ROOT, cwd}:
+        if path.is_relative_to(root):
+            parts = path.relative_to(root).parts
+            if parts and parts[0] == PROTECTED_DIR:
+                return True
+    return False
 
 
 def blocked(event):
-    tool = event.get("toolName") or event.get("tool_name") or ""
-    args = parse_args(event.get("toolArgs", event.get("tool_input")))
-    cwd = event.get("cwd") or str(REPO_ROOT)
+    tool = event.get("tool_name") or event.get("toolName") or ""
+    args = event.get("tool_input", event.get("toolArgs")) or {}
+    if isinstance(args, str):
+        try:
+            args = json.loads(args)
+        except ValueError:
+            args = {"command": args}
+    cwd = Path(event.get("cwd") or REPO_ROOT).resolve()
 
     if WRITE_TOOL.search(tool):
-        paths = list(collect_paths(args))
-        for text in collect_command_text(args):
+        paths = list(strings_under(args, PATH_KEY))
+        for text in strings_under(args, re.compile("")):
             paths.extend(match[0] or match[1] for match in PATCH_HEADER.findall(text))
-        return any(is_protected(path, cwd) for path in paths)
+        if any(is_protected(path, cwd) for path in paths):
+            return True
 
-    if SHELL_TOOL.search(tool):
-        command = "\n".join(collect_command_text(args))
-        return bool(DOCS_IN_COMMAND.search(command) and SHELL_WRITE.search(command))
-
-    return False
+    command = "\n".join(strings_under(args, COMMAND_KEY))
+    return bool(DOCS_IN_COMMAND.search(command) and SHELL_WRITE.search(command))
 
 
 def main():
     raw = sys.stdin.buffer.read().decode("utf-8")
-    event = json.loads(raw) if raw.strip() else {}
-    if blocked(event):
+    if raw.strip() and blocked(json.loads(raw)):
+        # Local shows stderr; Copilot passes permissionDecisionReason from stdout to the agent.
+        print(json.dumps({"permissionDecision": "deny", "permissionDecisionReason": REASON}))
         print(REASON, file=sys.stderr)
         sys.exit(2)
 
