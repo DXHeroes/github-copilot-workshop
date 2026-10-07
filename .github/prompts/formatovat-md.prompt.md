@@ -5,18 +5,18 @@ agent: agent
 tools: [execute]
 ---
 
-<!-- Prompt = vstupní bod. Stejný formátovač jako hook formatovani-md, jen ho spouští člověk. -->
+<!-- Prompt = vstupní bod. Stejný skript jako hook formatovani-md, jen ho spouští člověk. -->
 
-Zformátuj markdown v: ${input:cesty:soubory nebo složky, např. outputs/smart-savings/}
+Zformátuj markdown v: ${input:cesty:soubory nebo složky}
 
-1. Zjisti, které soubory se změní. Na Windows použij `python` místo `python3`.
+Když cesty chybí, zeptej se na ně.
 
-   ```sh
-   python3 -m mdformat --check --number --exclude "docs/**" <cesty>
-   ```
+Spusť stejný formátovač jako hook `formatovani-md` (na Windows `python` místo `python3`):
 
-2. Zformátuj je stejným příkazem bez `--check`.
+```sh
+python3 .github/hooks/formatovani-md.py <cesty>
+```
 
-3. Nahlas, které soubory se změnily. Obsah souborů ručně neupravuj.
+Skript přeskočí `docs/` a vypíše, které soubory změnil. Nahlas je uživateli. Obsah souborů ručně neupravuj.
 
-Když `mdformat` chybí, nic neinstaluj a řekni uživateli, ať spustí `pip install -r requirements.txt`.
+Když skript hlásí, že chybí `mdformat`, nic neinstaluj a řekni uživateli, ať spustí `pip install -r requirements.txt`.
