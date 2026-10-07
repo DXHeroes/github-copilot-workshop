@@ -5,8 +5,6 @@ tools: [read, search, edit, execute]
 
 # Analytik
 
-<!-- Agent = role a operating flow. Postup nad epicem je ve skillu, formát stories v instructions. Sem patří jen pořadí a hranice. -->
-
 ## Role
 
 Zastupuje business analytika. Vlastní epic, user stories a jejich otevřené otázky, ne rozhodnutí o rozporech.

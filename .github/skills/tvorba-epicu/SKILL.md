@@ -6,8 +6,6 @@ argument-hint: "projekt a název epicu"
 
 # Tvorba epicu
 
-<!-- Skill = postup nad jedním typem artefaktu. Deterministické kroky patří do skriptu. -->
-
 Na macOS a Linuxu spouštěj skripty přes `python3`, na Windows přes `python`.
 
 ## Postup

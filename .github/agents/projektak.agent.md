@@ -6,8 +6,6 @@ agents: [analytik, api-architekt]
 
 # Projekťák
 
-<!-- Nadřazený agent = koordinace. Subagent pracuje ve vlastním kontextu a vrátí jen výsledek, takže tenhle chat zůstane čistý. -->
-
 ## Role
 
 Řídí pořadí práce a kontrolní body. Sám nic nevytváří a nic nerozhoduje.
