@@ -4,8 +4,6 @@ argument-hint: "téma epicu"
 agent: analytik
 ---
 
-<!-- Prompt = vstupní bod. Předá kontext a zadání, doménová logika sem nepatří. -->
-
 Vytvoř epic na téma: ${input:tema:téma epicu}
 
 Projekt: ${input:projekt:název složky v docs/}

@@ -1,11 +1,7 @@
 ---
 description: "Zformátuje markdown soubory přes mdformat. Hodí se na soubory, které píšeš nebo upravuješ sám, bez Copilota."
 argument-hint: "soubory nebo složky"
-agent: agent
-tools: [execute]
 ---
-
-<!-- Prompt = vstupní bod. Stejný skript jako hook formatovani-md, jen ho spouští člověk. -->
 
 Zformátuj markdown v: ${input:cesty:soubory nebo složky}
 
