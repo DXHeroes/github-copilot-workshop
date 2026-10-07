@@ -12,12 +12,12 @@ Na macOS a Linuxu spouštěj skripty přes `python3`, na Windows přes `python`.
 
 ## Postup
 
-1. **Založ soubor** — spusť [novy-epic.sh](./scripts/novy-epic.sh) s projektem
+1. **Založ soubor** — spusť [novy_epic.py](./scripts/novy_epic.py) s projektem
    (název složky v `docs/`) a názvem epicu. Skript zkopíruje [šablonu](./assets/epic.template.md)
    do `outputs/<projekt>/<slug>.epic.md`.
 
    ```sh
-   .github/skills/tvorba-epicu/scripts/novy-epic.sh smart-savings "MVP úsporných cílů"
+   python3 .github/skills/tvorba-epicu/scripts/novy_epic.py smart-savings "MVP úsporných cílů"
    ```
 
 2. **Získej fakta** — přečti všechny soubory v `docs/<projekt>/` kromě `dod-sablona.md`.
