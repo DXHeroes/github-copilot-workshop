@@ -1,6 +1,6 @@
 ---
 description: "Projekťák: provede projekt od podkladů po návrh API. Práci předává analytikovi a API architektovi jako subagentům a na kontrolních bodech čeká na člověka."
-tools: [read, agent]
+tools: [read, agent, search]
 agents: [analytik, api-architekt]
 ---
 
