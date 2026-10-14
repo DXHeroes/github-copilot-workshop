@@ -64,7 +64,7 @@ graph LR
 
 ## ▶️ Spuštění ukázky
 
-1. Nainstaluj formátovač pro hook: `pip install -r requirements.txt` (Python 3.10+).
+1. Nainstaluj formátovač pro hook a validátor OpenAPI: `pip install -r requirements.txt` (Python 3.10+).
 2. Otevři repo ve VS Code jako důvěryhodnou složku (Workspace Trust), jinak se hooky nespustí.
 3. Spusť `/novy-epic` s projektem `smart-savings`.
 4. Celý cyklus od podkladů po návrh API: v chatu zvol agenta `projektak` a napiš mu projekt a téma.
@@ -74,5 +74,6 @@ Skripty a hooky mají testy, které můžeš spustit i ručně (na Windows `pyth
 ```sh
 python3 .github/skills/tvorba-epicu/scripts/test_novy_epic.py
 python3 .github/skills/tvorba-epicu/scripts/test_validate_epic.py
+python3 .github/skills/navrh-api/scripts/test_validate_openapi.py
 python3 .github/hooks/test_hooks.py
 ```
