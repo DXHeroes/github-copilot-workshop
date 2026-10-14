@@ -1,6 +1,7 @@
 ---
 description: "Zkontroluje hotový výstup (epic, user stories nebo návrh API) proti DoD projektu a vrátí nesplněné body. Nic neopravuje."
 argument-hint: "cesta k výstupu"
+agent: kontrolor
 ---
 
 Zkontroluj `${input:soubor:cesta k výstupu v outputs/ nebo api/}` proti `docs/<projekt>/dod-sablona.md`.
