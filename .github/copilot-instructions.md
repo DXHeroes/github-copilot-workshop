@@ -17,5 +17,7 @@ Repo slouží k přípravě analytických výstupů (epic, user stories, návrh 
   Podklady jiného projektu nepoužívej.
 - **Rozpory se nerozhodují, rozpory se zapisují.** Uveď obě varianty, zdroje a vlastníka rozhodnutí.
 - **Struktura výstupu se bere ze šablony**, nikdy se nevymýšlí ad hoc.
+- **Návrh API dělá agent `api-architekt`.** Když jím nejsi a máš navrhnout nebo upravit `api/<projekt>.openapi.yaml`,
+  předej mu to jako subagentovi s cestou ke stories. A to i tehdy, když stories vznikly v tomhle chatu.
 - Výstupy jsou česky, věcně, v odrážkách.
 - Za faktem ve výstupu vždy odkaz na zdrojový soubor v `docs/<projekt>/`.
