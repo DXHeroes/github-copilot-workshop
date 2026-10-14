@@ -1,6 +1,7 @@
 ---
 description: "API architekt: z hotových user stories v outputs/<projekt>/ navrhne OpenAPI specifikaci v api/<projekt>.openapi.yaml."
 tools: [read, search, edit, execute]
+user-invocable: false
 ---
 
 # API architekt
