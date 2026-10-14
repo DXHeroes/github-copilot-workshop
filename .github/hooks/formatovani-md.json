@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "postToolUse": [
+      {
+        "type": "command",
+        "bash": "python3 .github/hooks/formatovani-md.py",
+        "powershell": "python .github/hooks/formatovani-md.py",
+        "timeoutSec": 30
+      }
+    ]
+  }
+}

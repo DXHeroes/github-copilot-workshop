@@ -15,7 +15,7 @@ rozpory najít a zapsat, ne o tom je rozhodnout.
 ## 🌿 Branche
 
 - **`main`** — AI artefakty jsou záměrně **prázdné kostry s TODO**. Hotový je jen skript `novy_epic.py`
-  a hook `ochrana-docs`, který chrání `docs/` před zápisem. Tady začínáš.
+  a hook `formatovani-md`, který zformátuje každý Markdown, jakmile ho agent vytvoří nebo upraví. Tady začínáš.
 - **[`ukazka`](https://github.com/DXHeroes/github-copilot-workshop/tree/ukazka)** — kompletní
   řešení nad Smart Savings. Když tě zajímá jedna vrstva, otevři rovnou její složku
   v `.github/` podle tabulky níže.
@@ -48,8 +48,7 @@ graph LR
 
     Instr["copilot-instructions.md"] -.->|"vždy v kontextu"| Agent
     PInstr["*.instructions.md"] -.->|"podle applyTo"| Vystup
-    Hook["hooks"] -.->|"chrání před zápisem"| Docs
-    Hook -.->|"formátují"| Vystup
+    Hook["hooks"] -.->|"formátují"| Vystup
 
     style Docs fill:#FFE4B5
     style Vystup fill:#90EE90
@@ -63,10 +62,12 @@ graph LR
 
 ## ▶️ Jak s tím pracovat
 
-1. Otevři jeden artefakt a nahraď TODO vlastním obsahem.
-2. Zkus ho v chatu (např. `/novy-epic`) nad `docs/financni-ukazatel/` a podívej se, co se změnilo.
-3. Přidej další artefakt tam, kde ti něco chybí.
-4. Když nevíš, jak dál, podívej se, jak stejnou vrstvu řeší branch `ukazka`.
+1. Nainstaluj formátovač pro hook: `pip install -r requirements.txt` (Python 3.10+).
+2. Otevři repo ve VS Code jako důvěryhodnou složku (Workspace Trust), jinak se hooky nespustí.
+3. Otevři jeden artefakt a nahraď TODO vlastním obsahem.
+4. Zkus ho v chatu (např. `/novy-epic`) nad `docs/financni-ukazatel/` a podívej se, co se změnilo.
+5. Přidej další artefakt tam, kde ti něco chybí.
+6. Když nevíš, jak dál, podívej se, jak stejnou vrstvu řeší branch `ukazka`.
 
 ## 🔍 Na co se u toho dívat
 
@@ -74,7 +75,7 @@ graph LR
 - Proč zakládá soubor **skript** a ne model?
 - Co by se stalo, kdyby **template** neexistoval?
 - Proč má **agent** delegovat na skill místo vlastního postupu?
-- Proč kontrolu zápisu do `docs/` řeší **hook**, a ne věta v instrukcích?
+- Proč formátování Markdownu řeší **hook**, a ne věta v instrukcích?
 
 ```mermaid
 graph LR
@@ -85,7 +86,7 @@ graph LR
     Docs[docs/*/<br/>chaotické podklady] --> Skill
     Script --> Epic[outputs/*/<br/>*.epic.md]
     Instr[instructions<br/>epic.instructions.md] -.pravidla.-> Epic
-    Hook[hook<br/>ochrana-docs] -.chrání.-> Docs
+    Hook[hook<br/>formatovani-md] -.formátuje.-> Epic
 
     style Docs fill:#FFE4B5
     style Epic fill:#90EE90
