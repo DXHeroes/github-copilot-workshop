@@ -15,7 +15,7 @@ rozpory najít a zapsat, ne o tom je rozhodnout.
 ## 🌿 Branche
 
 - **`main`** — AI artefakty jsou záměrně **prázdné kostry s TODO**. Hotový je jen skript `novy_epic.py`
-  a hook `ochrana-docs`, který chrání `docs/` před zápisem. Tady začínáš.
+  a hook `formatovani-md`, který zformátuje každý Markdown, jakmile ho agent vytvoří nebo upraví. Tady začínáš.
 - **[`ukazka`](https://github.com/DXHeroes/github-copilot-workshop/tree/ukazka)** — kompletní
   řešení nad Smart Savings. Když tě zajímá jedna vrstva, otevři rovnou její složku
   v `.github/` podle tabulky níže.
@@ -48,8 +48,7 @@ graph LR
 
     Instr["copilot-instructions.md"] -.->|"vždy v kontextu"| Agent
     PInstr["*.instructions.md"] -.->|"podle applyTo"| Vystup
-    Hook["hooks"] -.->|"chrání před zápisem"| Docs
-    Hook -.->|"formátují"| Vystup
+    Hook["hooks"] -.->|"formátují"| Vystup
 
     style Docs fill:#FFE4B5
     style Vystup fill:#90EE90

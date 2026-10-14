@@ -17,94 +17,12 @@ def load(name):
     return module
 
 
-def run_hook(name, payload):
-    data = payload if isinstance(payload, bytes) else json.dumps(payload, ensure_ascii=False).encode("utf-8")
-    return subprocess.run([sys.executable, str(HOOKS_DIR / f"{name}.py")], input=data, capture_output=True,
-                          cwd=REPO_ROOT)
-
-
 def copilot(tool, args):
     return {"toolName": tool, "toolArgs": json.dumps(args, ensure_ascii=False), "cwd": str(REPO_ROOT)}
 
 
 def local(tool, args):
-    return {"hook_event_name": "PreToolUse", "tool_name": tool, "tool_input": args, "cwd": str(REPO_ROOT)}
-
-
-class OchranaDocsTest(unittest.TestCase):
-    denied = {
-        "copilot edit": copilot("edit", {"path": "docs/smart-savings/email-kickoff.md"}),
-        "absolute path": copilot("edit", {"path": str(REPO_ROOT / "docs" / "a.md")}),
-        "path traversal": copilot("edit", {"path": "outputs/../docs/a.md"}),
-        "windows backslashes": copilot("edit", {"path": "docs\\smart-savings\\a.md"}),
-        "czech file name": copilot("create", {"path": "docs/žluťoučký.md"}),
-        "local replace": local("replace_string_in_file", {"filePath": str(REPO_ROOT / "docs" / "a.md")}),
-        "local new directory": local("create_directory", {"dirPath": "docs/new"}),
-        "one of many files": local("multi_replace_string_in_file",
-                                   {"replacements": [{"filePath": "outputs/a.md"}, {"filePath": "docs/b.md"}]}),
-        "apply patch": local("apply_patch", {"input": "*** Begin Patch\n*** Update File: docs/a.md\n*** End Patch"}),
-        "shell redirect": copilot("bash", {"command": "echo x > docs/a.md"}),
-        "shell sed -i": copilot("bash", {"command": "sed -i '' s/a/b/ docs/a.md"}),
-        "shell rm": copilot("bash", {"command": "rm -rf ./docs/"}),
-        "powershell": copilot("powershell", {"command": "Set-Content -Path docs\\a.md -Value x"}),
-        "local terminal git mv": local("run_in_terminal", {"command": "git mv docs/a.md docs/b.md"}),
-        "local task command": local("create_and_run_task",
-                                    {"task": {"label": "x", "type": "shell", "command": "rm docs/a.md"}}),
-        "local task args": local("create_and_run_task",
-                                 {"task": {"label": "x", "type": "shell", "command": "rm", "args": ["docs/a.md"]}}),
-        "python one-liner": copilot("bash", {"command": "python3 -c \"open('docs/a.md', 'w').write('x')\""}),
-        "node one-liner": local("run_in_terminal",
-                                {"command": "node -e \"require('fs').writeFileSync('docs/a.md', 'x')\""}),
-    }
-    allowed = {
-        "write to outputs": copilot("create", {"path": "outputs/smart-savings/x.epic.md", "file_text": "docs/a.md"}),
-        "read docs": copilot("view", {"path": "docs/smart-savings/a.md"}),
-        "local read docs": local("read_file", {"filePath": str(REPO_ROOT / "docs" / "a.md")}),
-        "similar directory name": copilot("edit", {"path": "docs-old/a.md"}),
-        "nested docs directory": copilot("edit", {"path": "outputs/docs/a.md"}),
-        "patch to outputs": local("apply_patch", {"input": "*** Add File: outputs/a.md\n+see docs/a.md"}),
-        "shell read": copilot("bash", {"command": "cat docs/smart-savings/*.md | wc -w"}),
-        "shell stderr redirect": copilot("bash", {"command": "grep -rn PSD2 docs/ 2>/dev/null"}),
-        "shell grep -e": copilot("bash", {"command": "grep -e PSD2 docs/smart-savings/a.md"}),
-        "local task without docs": local("create_and_run_task", {"task": {"label": "x", "command": "npm test"}}),
-    }
-
-    def test_denied(self):
-        for name, payload in self.denied.items():
-            with self.subTest(name):
-                result = run_hook("ochrana-docs", payload)
-                self.assertEqual(result.returncode, 2)
-                self.assertIn(b"docs/", result.stderr)
-
-    def test_deny_reason_reaches_the_copilot_agent(self):
-        # Copilot merges stdout JSON with the exit 2 deny and shows permissionDecisionReason to the agent.
-        result = run_hook("ochrana-docs", copilot("edit", {"path": "docs/a.md"}))
-        output = json.loads(result.stdout)
-        self.assertEqual(output["permissionDecision"], "deny")
-        self.assertIn("docs/", output["permissionDecisionReason"])
-
-    def test_repo_opened_through_a_symlink_is_protected(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            link = Path(tmp) / "repo-link"
-            link.symlink_to(REPO_ROOT, target_is_directory=True)
-            payload = local("create_file", {"filePath": str(link / "docs" / "a.md")}) | {"cwd": str(link)}
-            self.assertEqual(run_hook("ochrana-docs", payload).returncode, 2)
-
-    def test_docs_of_another_working_copy_are_protected(self):
-        # A worktree session works in a different folder than the one the hook script lives in.
-        with tempfile.TemporaryDirectory() as tmp:
-            payload = copilot("create", {"path": "docs/a.md"}) | {"cwd": tmp}
-            self.assertEqual(run_hook("ochrana-docs", payload).returncode, 2)
-
-    def test_allowed(self):
-        for name, payload in self.allowed.items():
-            with self.subTest(name):
-                self.assertEqual(run_hook("ochrana-docs", payload).returncode, 0)
-
-    def test_bad_input_lets_the_call_through(self):
-        for name, payload in {"empty": b"", "not json": b"not json"}.items():
-            with self.subTest(name):
-                self.assertEqual(run_hook("ochrana-docs", payload).returncode, 0)
+    return {"hook_event_name": "PostToolUse", "tool_name": tool, "tool_input": args, "cwd": str(REPO_ROOT)}
 
 
 class FormatovaniMdPathsTest(unittest.TestCase):
