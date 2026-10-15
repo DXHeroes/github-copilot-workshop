@@ -1,0 +1,449 @@
+openapi: 3.1.0
+info:
+  title: Finanční ukazatel API
+  version: 0.1.0
+  description: |
+    Návrh API pro MVP Finančního ukazatele (financial-health-service).
+    - Vychází ze stories `outputs/financni-ukazatel/mvp-financniho-ukazatele.stories.md`
+      a sekce 10 epicu `outputs/financni-ukazatel/mvp-financniho-ukazatele.epic.md`.
+    - Zapracovaná rozhodnutí: jen základní metriky (rozpor 2), název „Finanční ukazatel“ (rozpor 3),
+      bez sdílení (rozpor 6), přepočet jednou denně v dávce do cache (rozpor 10).
+    - Rozpory 4, 7 a 9 zůstávají otevřené a jsou u dotčených operací a polí jako `x-open-question`.
+    - Podklady navrhují cesty `/users/{id}/financial-health…` (schuzka-technicka.md, poznamka-architekt.md);
+      podle konvence se identita klienta bere z tokenu, proto cesty bez ID klienta.
+  x-open-question:
+    - "Požadavek na lidský přezkum (US-20) nemá operaci: kanál, proces a odpovědná role nejsou určené, viz otázka 26 v epicu."
+    - "Texty disclaimeru a onboardingu (US-13, US-15) nemají operaci: není určeno, zda je FE dostane z API, finální texty chybí, viz otázka 24 v epicu."
+    - "Spuštění bootstrap dávky (US-08) nemá operaci: podklady neuvádějí, jak se bootstrap spouští; stav je vidět v `GET /v1/batch-jobs`."
+    - "Případné nastavení skrytí ukazatele nemá operaci, dokud není rozhodnut rozpor 9 v epicu."
+servers:
+  - url: https://api.example.invalid
+    description: Placeholder, prostředí nejsou v podkladech uvedena.
+security:
+  - bearerAuth: []
+tags:
+  - name: Ukazatel
+    description: Čtení Finančního ukazatele pro mobilní aplikaci.
+  - name: Souhlasy
+    description: Granulární souhlasy klienta (GDPR čl. 22).
+  - name: Interní
+    description: Interní operace, nejsou dostupné pro FE mobilní aplikace.
+
+paths:
+  /v1/financial-indicators/me:
+    get:
+      tags: [Ukazatel]
+      operationId: getFinancialIndicator
+      summary: Vrátí hodnotu, barvu a textový popis Finančního ukazatele klienta
+      description: |
+        - Čte výsledek z Redis cache, nečeká na zdrojová API (schuzka-technicka.md, poznamka-architekt.md).
+        - Výsledek je z posledního denního přepočtu, cache má TTL 24 h (poznamka-architekt.md).
+        - Validace je na serveru, FE data přebírá beze změny (schuzka-technicka.md).
+        - Když výsledek v cache chybí, vrací `status: pending` a interně se spustí on-demand výpočet (US-11, schuzka-technicka.md).
+      x-user-story: US-09
+      x-open-question:
+        - "Forma hodnoty: škála 0–100, nebo 3–5 úrovní / semafor, viz rozpor 4 v epicu."
+        - "Možnost ukazatel skrýt z home screenu, viz rozpor 9 v epicu. Případné nastavení viditelnosti API nenavrhuje."
+        - "Co vrátit klientovi bez souhlasu s analýzou nebo po jeho odvolání, viz otázka 28 v epicu."
+        - "Co vrátit klientovi s krátkou historií (omezená verze, nebo nic), viz rozpory 11 a 12 v epicu."
+        - "Co vrátit klientovi se sdíleným účtem nebo více účty, viz otázka 20 v epicu."
+        - "Chování při neúplných datech ze zdrojových API, viz otázka 16 v epicu."
+      responses:
+        "200":
+          description: Stav ukazatele klienta.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinancialIndicator"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/financial-indicators/me/factors:
+    get:
+      tags: [Ukazatel]
+      operationId: getFinancialIndicatorFactors
+      summary: Vrátí rozpad Finančního ukazatele na faktory
+      description: |
+        - Faktory příjmy, výdaje, zůstatek a úvěrové zatížení, u každého směr změny a krátký komentář (schuzka-technicka.md).
+        - Faktory analýzy finančního chování se nevracejí, rozhodnuto rozporem 2 v epicu (email-zmena-priorit.md).
+        - Čte z Redis cache, validace je na serveru (schuzka-technicka.md, poznamka-architekt.md).
+      x-user-story: US-10
+      x-open-question:
+        - "Transparentnost výpočtu: vracet i váhy a vzorec, nebo jen faktory a jejich obecný vliv, viz rozpor 7 v epicu. Pole pro váhy a vzorec proto nejsou navržená."
+        - "Tón komentářů u faktorů, viz rozpor 8 v epicu."
+      responses:
+        "200":
+          description: Rozpad faktorů z posledního přepočtu.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FinancialIndicatorFactors"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/consents:
+    post:
+      tags: [Souhlasy]
+      operationId: grantConsent
+      summary: Udělí jeden granulární souhlas
+      description: |
+        - Explicitní opt-in, každý souhlas zvlášť: analýza transakcí, zobrazení ukazatele, notifikace (email-zmena-priorit.md).
+        - Bez souhlasu s analýzou transakcí se ukazatel klientovi nepočítá (email-zmena-priorit.md).
+      x-user-story: US-01
+      x-open-question:
+        - "Frekvence notifikací, ke kterým se souhlas `notifications` váže, viz rozpor 5 v epicu."
+        - "Čtení aktuálního stavu souhlasů nemá v podkladech oporu ani story; není navrženo."
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConsentGrant"
+      responses:
+        "201":
+          description: Souhlas udělen.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consent"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/consents/{consentType}:
+    delete:
+      tags: [Souhlasy]
+      operationId: revokeConsent
+      summary: Odvolá udělený souhlas
+      description: |
+        - Každý granulární souhlas jde kdykoliv odvolat (email-zmena-priorit.md).
+        - Po odvolání souhlasu s analýzou transakcí se klient nezařadí do dalšího výpočtu (email-zmena-priorit.md).
+      x-user-story: US-02
+      x-open-question:
+        - "Co se stane s už spočítanými výsledky v cache a jak dlouho se uchovávají, viz otázka 23 v epicu."
+        - "Co klient po odvolání uvidí na místě ukazatele, viz otázka 28 v epicu."
+      parameters:
+        - name: consentType
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/ConsentType"
+      responses:
+        "204":
+          description: Souhlas odvolán.
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/calculations:
+    post:
+      tags: [Interní]
+      operationId: createCalculation
+      summary: Spustí on-demand výpočet ukazatele při prázdné cache (interní)
+      description: |
+        - Interní operace, není pro FE (schuzka-technicka.md, poznamka-architekt.md); v podkladech jako `POST /financial-health/calculate`.
+        - Asynchronní: vrací `202 Accepted` a odkaz na stav výpočtu.
+        - Výpočet může v peaku trvat až 5 s, odezva Account Data API v peaku 3–5 s (schuzka-technicka.md, poznamka-architekt.md).
+        - Zdrojové limity: Account Data API 200 req/min per API key, sdílený; při 429 cooldown 60 s; Loan Service API 50 req/min (poznamka-architekt.md).
+        - Vstupem jsou jen settled transakce a účty v CZK, sdílené účty se nezahrnují (schuzka-technicka.md, poznamka-architekt.md).
+      x-user-story: US-11
+      x-open-question:
+        - "Jak se interní operaci předá identita klienta, když ji nevolá FE s tokenem klienta. Podklady to neuvádějí."
+        - "Autentizace interních volání (service account, síťové omezení) není v podkladech popsaná."
+        - "Chování při neúplných datech ze zdrojových API (timeout, partial response), viz otázka 16 v epicu."
+      responses:
+        "202":
+          description: Výpočet přijat ke zpracování.
+          headers:
+            Location:
+              description: Odkaz na stav výpočtu, `/v1/calculations/{calculationId}`.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Calculation"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409": { $ref: "#/components/responses/Conflict" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/calculations/{calculationId}:
+    get:
+      tags: [Interní]
+      operationId: getCalculation
+      summary: Vrátí stav on-demand výpočtu (interní)
+      description: |
+        - Stavový zdroj k asynchronnímu `POST /v1/calculations`. Interní, není pro FE (schuzka-technicka.md).
+      x-user-story: US-11
+      parameters:
+        - name: calculationId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Stav výpočtu.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Calculation"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+  /v1/batch-jobs:
+    get:
+      tags: [Interní]
+      operationId: listBatchJobs
+      summary: Vrátí stav dávkových jobů (interní monitoring)
+      description: |
+        - Interní monitoring, není dostupný pro FE mobilní aplikace (schuzka-technicka.md); v podkladech jako `GET /financial-health/batch/status`.
+        - Denní přepočet běží plánovaně 02:00–06:00 (poznamka-architekt.md); bootstrap před spuštěním trvá min. 2 dny (schuzka-technicka.md, poznamka-architekt.md).
+        - Seznam je stránkovaný.
+      x-user-story: US-07
+      x-open-question:
+        - "Obsah stavu jobu (metriky, počty zpracovaných klientů, chyby) podklady nedefinují; navržen jen typ, stav a časy."
+        - "Autentizace interních volání není v podkladech popsaná."
+        - "Kdo bude průběžně monitorovat přesnost výpočtu, viz otázka 19 v epicu."
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/PageSize"
+      responses:
+        "200":
+          description: Stránka dávkových jobů.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BatchJobPage"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "429": { $ref: "#/components/responses/TooManyRequests" }
+        "500": { $ref: "#/components/responses/InternalServerError" }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Token klienta; identita klienta se bere z tokenu.
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    PageSize:
+      name: pageSize
+      in: query
+      required: false
+      description: Maximální velikost stránky podklady neuvádějí.
+      schema:
+        type: integer
+        minimum: 1
+
+  schemas:
+    FinancialIndicator:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [ready, pending]
+          description: |
+            - `ready`: výsledek je v cache.
+            - `pending`: výsledek v cache chybí (po deployi, výpadku Redis, nový uživatel), FE zobrazí placeholder (schuzka-technicka.md).
+          x-open-question: "Další stavy (bez souhlasu, krátká historie, nepodporované účty) nejsou rozhodnuté, viz otázky 20, 28 a rozpory 11, 12 v epicu."
+        value:
+          type: [integer, string, "null"]
+          description: Hodnota ukazatele. Při `pending` je `null`.
+          x-open-question: "Typ a rozsah hodnoty závisí na rozporu 4 v epicu: škála 0–100 (email-kickoff.md, schuzka-business.md), nebo 3–5 úrovní / semafor (ux-vyzkum.md, email-zmena-priorit.md)."
+        color:
+          type: [string, "null"]
+          enum: [green, orange, red, null]
+          description: Barva podle pásem zelená 70–100, oranžová 40–69, červená 0–39 (schuzka-technicka.md). Při `pending` je `null`.
+          x-open-question: "Pásma jsou definovaná pro škálu 0–100; při jiné formě škály, viz rozpor 4 v epicu, se mění."
+        description:
+          type: [string, "null"]
+          description: Textový popis, např. „Jste na dobré cestě“, „Mírné riziko“, „Potřebuje pozornost“ (schuzka-technicka.md). Při `pending` je `null`.
+          x-open-question: "Tón textací, viz rozpor 8 v epicu."
+        calculatedAt:
+          type: [string, "null"]
+          format: date-time
+          description: Čas posledního přepočtu, ze kterého výsledek pochází (schuzka-technicka.md). Při `pending` je `null`.
+
+    FinancialIndicatorFactors:
+      type: object
+      required: [factors, calculatedAt]
+      properties:
+        factors:
+          type: array
+          items:
+            $ref: "#/components/schemas/Factor"
+        calculatedAt:
+          type: string
+          format: date-time
+          description: Čas posledního přepočtu.
+
+    Factor:
+      type: object
+      required: [name, direction, comment]
+      properties:
+        name:
+          type: string
+          enum: [income, expenses, balance, credit-burden]
+          description: Příjmy, výdaje, zůstatek, úvěrové zatížení (schuzka-technicka.md).
+        direction:
+          type: string
+          enum: [up, down]
+          description: Směr změny, šipka nahoru/dolů (schuzka-technicka.md).
+          x-open-question: "Podklady neuvádějí směr pro faktor beze změny; trend „stagnuje“ zná jen vstup výpočtu (schuzka-business.md)."
+        comment:
+          type: string
+          description: Krátký komentář k faktoru (schuzka-technicka.md).
+          x-open-question: "Tón komentářů, viz rozpor 8 v epicu."
+      x-open-question: "Zda faktor obsahuje i váhu a podíl na vzorci, viz rozpor 7 v epicu."
+
+    ConsentType:
+      type: string
+      enum: [transaction-analysis, indicator-display, notifications]
+      description: Oddělené souhlasy s analýzou transakcí, zobrazením ukazatele a notifikacemi (email-zmena-priorit.md).
+
+    ConsentGrant:
+      type: object
+      required: [type]
+      properties:
+        type:
+          $ref: "#/components/schemas/ConsentType"
+
+    Consent:
+      type: object
+      required: [type, grantedAt]
+      properties:
+        type:
+          $ref: "#/components/schemas/ConsentType"
+        grantedAt:
+          type: string
+          format: date-time
+
+    Calculation:
+      type: object
+      required: [id, status]
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum: [accepted, running, completed, failed]
+        createdAt:
+          type: string
+          format: date-time
+        finishedAt:
+          type: [string, "null"]
+          format: date-time
+
+    BatchJob:
+      type: object
+      required: [id, type, status]
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [daily, bootstrap]
+          description: Denní přepočet (US-06) nebo bootstrap před spuštěním (US-08).
+        status:
+          type: string
+          enum: [scheduled, running, completed, failed]
+        startedAt:
+          type: [string, "null"]
+          format: date-time
+        finishedAt:
+          type: [string, "null"]
+          format: date-time
+
+    BatchJobPage:
+      type: object
+      required: [items, page, pageSize, totalItems]
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/BatchJob"
+        page:
+          type: integer
+        pageSize:
+          type: integer
+        totalItems:
+          type: integer
+
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Neplatný požadavek.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Unauthorized:
+      description: Chybí nebo je neplatný token.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Forbidden:
+      description: Přístup odepřen.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    NotFound:
+      description: Zdroj nenalezen.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    Conflict:
+      description: Konflikt se stavem zdroje.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    TooManyRequests:
+      description: Překročen limit požadavků. Vlastní rate limit služby podklady neuvádějí; zdrojová Account Data API vrací 429 s cooldownem 60 s (poznamka-architekt.md).
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
+    InternalServerError:
+      description: Neočekávaná chyba serveru.
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Error" }
